@@ -421,12 +421,13 @@ Set the alarm mode in the following way:
 7: All disabled � Default value
 If you want to set a weekday alarm (setWeekdayAlarm_not_Date = true), set 'date_or_weekday' from 0 (Sunday) to 6 (Saturday)
 ********************************/
-void RV3028::enableAlarmInterrupt(uint8_t min, uint8_t hour, uint8_t date_or_weekday, bool setWeekdayAlarm_not_Date, uint8_t mode, bool enable_clock_output)
+void RV3028::enableAlarmInterrupt(uint8_t min, uint8_t hour, uint8_t date_or_weekday, bool setWeekdayAlarm_not_Date, uint8_t mode, bool enable_clock_output, bool clearFlag)
 {
 	//disable Alarm Interrupt to prevent accidental interrupts during configuration
 	disableAlarmInterrupt();
-	clearAlarmInterruptFlag();
-
+	if(clearFlag) {
+	  clearAlarmInterruptFlag();
+	}
 	//ENHANCEMENT: Add Alarm in 12 hour mode
 	set24Hour();
 
@@ -727,7 +728,6 @@ void RV3028::clearClockOutputInterruptFlag()
 	clearBit(RV3028_STATUS, STATUS_CLKF);
 }
 
-
 //Returns the status byte
 uint8_t RV3028::status(void)
 {
@@ -739,9 +739,30 @@ void RV3028::clearInterrupts() //Read the status register to clear the current i
 	writeRegister(RV3028_STATUS, 0);
 }
 
+void RV3028::enablePORIE() // Enables Power On Reset Interrupt
+{
+	setBit(EEPROM_Clkout_Register, EEPROMClkout_PORIE);
+}
 
+void RV3028::disablePORIE() // Disables Power On Reset Interrupt
+{
+	clearBit(EEPROM_Clkout_Register, EEPROMClkout_PORIE);
+}
 
+bool RV3028::readPORIE()
+{
+	return(readBit(EEPROM_Clkout_Register, EEPROMClkout_PORIE));
+}
 
+void RV3028::clearPowerOnInterruptFlag()
+{
+	clearBit(RV3028_STATUS, STATUS_PORF);
+}
+
+bool RV3028::readPowerOnInterruptFlag()
+{
+	return(readBit(RV3028_STATUS, STATUS_PORF));
+}
 
 /*********************************
 FOR INTERNAL USE

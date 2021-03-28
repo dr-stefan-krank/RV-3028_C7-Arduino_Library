@@ -185,7 +185,7 @@ Distributed as-is; no warranty is given.
 #define IMT_MASK_CUIE					0				//Clock output when Periodic Time Update Interrupt bit.
 
 
-#define TIME_ARRAY_LENGTH 7 // Total number of writable values in device
+#define TIME_ARRAY_LENGTH 7 // Total number of writable values in deviceEEPROMClkout_PORIE
 
 enum time_order {
 	TIME_SECONDS,    // 0
@@ -240,7 +240,7 @@ public:
 	bool setUNIX(uint32_t value);//Set the UNIX Time (Real Time and UNIX Time are INDEPENDENT!)
 	uint32_t getUNIX();
 
-	void enableAlarmInterrupt(uint8_t min, uint8_t hour, uint8_t date_or_weekday, bool setWeekdayAlarm_not_Date, uint8_t mode, bool enable_clock_output = false);
+	void enableAlarmInterrupt(uint8_t min, uint8_t hour, uint8_t date_or_weekday, bool setWeekdayAlarm_not_Date, uint8_t mode, bool enable_clock_output = false, bool clearFlag = true);
 	void enableAlarmInterrupt();
 	void disableAlarmInterrupt();
 	bool readAlarmInterruptFlag();
@@ -262,6 +262,12 @@ public:
 	void enableTrickleCharge(uint8_t tcr = TCR_15K); //Trickle Charge Resistor default 15k
 	void disableTrickleCharge();
 	bool setBackupSwitchoverMode(uint8_t val);
+
+	void enablePORIE();
+	void disablePORIE();
+	bool readPORIE();
+    bool readPowerOnInterruptFlag();
+	void clearPowerOnInterruptFlag();
 
 	void enableClockOut(uint8_t freq);
 	void enableInterruptControlledClockout(uint8_t freq);
