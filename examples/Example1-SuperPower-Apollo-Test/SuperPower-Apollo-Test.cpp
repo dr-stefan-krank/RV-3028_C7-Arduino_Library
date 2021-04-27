@@ -1,3 +1,4 @@
+#include <Arduino.h>
 #include <RV-3028-C7.h>
 
 RV3028 rtc;
