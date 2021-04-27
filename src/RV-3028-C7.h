@@ -187,6 +187,23 @@ Distributed as-is; no warranty is given.
 
 #define TIME_ARRAY_LENGTH 7 // Total number of writable values in deviceEEPROMClkout_PORIE
 
+// Bits in Event Control register
+#define EVT_EHL							6
+#define EVT_ET_LOW						4
+#define EVT_ET_HIGH						5
+#define EVT_TSR							2
+#define EVT_TSOW						1
+#define EVT_TSS							0
+
+// Values for External Event interrupt
+#define EHL_FALLING						0
+#define EHL_RISING						1
+#define EHL_FILTER_OFF					0b00
+#define EHL_FILTER_4					0b01
+#define EHL_FILTER_16					0b10
+#define EHL_FILTER_125					0b11
+
+
 enum time_order {
 	TIME_SECONDS,    // 0
 	TIME_MINUTES,    // 1
@@ -269,6 +286,11 @@ public:
     bool readPowerOnInterruptFlag();
 	void clearPowerOnInterruptFlag();
 
+	void setExternalInterruptEdge(bool edge = EHL_FALLING);
+	void setExternalEventFiltering(byte filter = EHL_FILTER_OFF);
+	bool readExternalInterruptFlag();
+	void clearExternalInterruptFlag();
+
 	void enableClockOut(uint8_t freq);
 	void enableInterruptControlledClockout(uint8_t freq);
 	void disableClockOut();
@@ -302,4 +324,3 @@ private:
 
 //POSSIBLE ENHANCEMENTS :
 //ENHANCEMENT: Battery Interrupt / check battery voltage
-//ENHANCEMENT: External Event Interrupt

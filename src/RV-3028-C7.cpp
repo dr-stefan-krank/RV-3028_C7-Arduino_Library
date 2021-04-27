@@ -741,12 +741,22 @@ void RV3028::clearInterrupts() //Read the status register to clear the current i
 
 void RV3028::enablePORIE() // Enables Power On Reset Interrupt
 {
-	setBit(EEPROM_Clkout_Register, EEPROMClkout_PORIE);
+    //Read EEPROM Clkout Register (0x35)
+	uint8_t EEPROMClkout = readConfigEEPROM_RAMmirror(EEPROM_Clkout_Register);
+	//Write 1 to PORIE Bit
+	EEPROMClkout &= ~(1 << EEPROMClkout_PORIE);
+	//Write EEPROM Backup Register
+	writeConfigEEPROM_RAMmirror(EEPROM_Clkout_Register, EEPROMClkout);
 }
 
 void RV3028::disablePORIE() // Disables Power On Reset Interrupt
 {
-	clearBit(EEPROM_Clkout_Register, EEPROMClkout_PORIE);
+    //Read EEPROM Clkout Register (0x35)
+	uint8_t EEPROMClkout = readConfigEEPROM_RAMmirror(EEPROM_Clkout_Register);
+	//Write 0 to PORIE Bit
+	EEPROMClkout &= ~(0 << EEPROMClkout_PORIE);
+	//Write EEPROM Backup Register
+	writeConfigEEPROM_RAMmirror(EEPROM_Clkout_Register, EEPROMClkout);
 }
 
 bool RV3028::readPORIE()
@@ -763,6 +773,30 @@ bool RV3028::readPowerOnInterruptFlag()
 {
 	return(readBit(RV3028_STATUS, STATUS_PORF));
 }
+
+void RV3028::setExternalInterruptEdge(bool edge) {
+	if(edge == EHL_FALLING) {
+  		clearBit(RV3028_EVENTCTRL, EVT_EHL); // EHL for positive edge
+	} else {
+		setBit(RV3028_EVENTCTRL, EVT_EHL); // EHL for positive edge
+	}
+}
+
+void RV3028::setExternalEventFiltering(byte filter = EHL_FILTER_OFF) {
+	// needs more work
+	setBit(RV3028_EVENTCTRL, 5); // glitch filter to 15.6ms 
+
+}
+
+bool RV3028::readExternalInterruptFlag() {
+	return readBit(RV3028_STATUS, STATUS_EVF);
+
+}
+
+void RV3028::clearExternalInterruptFlag() {
+	clearBit(RV3028_STATUS, STATUS_EVF);
+}
+
 
 /*********************************
 FOR INTERNAL USE
