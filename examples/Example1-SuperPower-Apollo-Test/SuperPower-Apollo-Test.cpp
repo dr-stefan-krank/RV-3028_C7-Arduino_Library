@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include <Wire.h>
 #include <RV-3028-C7.h>
 
 RV3028 rtc;
@@ -27,6 +28,7 @@ void setup()
         // Setup external interrupt on rising edge
         rtc.setExternalEventFiltering(EHL_FILTER_4);
         rtc.setExternalInterruptEdge(EHL_RISING);
+        rtc.enableExternalInterrupt();
 
         if (rtc.readAlarmInterruptFlag())
         {
@@ -75,4 +77,9 @@ void RTCSleep(int hours, int minutes)
     rtc.clearAlarmInterruptFlag();
     rtc.clearPowerOnInterruptFlag();
     rtc.clearExternalInterruptFlag();
+}
+
+void loop() {
+  // Serial.println(rtc.readRegister(RV3028_STATUS));
+  delay(1000);
 }

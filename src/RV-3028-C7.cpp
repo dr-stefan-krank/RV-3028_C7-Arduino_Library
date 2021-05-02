@@ -743,9 +743,11 @@ void RV3028::enablePORIE() // Enables Power On Reset Interrupt
 {
     //Read EEPROM Clkout Register (0x35)
 	uint8_t EEPROMClkout = readConfigEEPROM_RAMmirror(EEPROM_Clkout_Register);
+	Serial.println(EEPROMClkout);
 	//Write 1 to PORIE Bit
-	EEPROMClkout &= ~(1 << EEPROMClkout_PORIE);
+	EEPROMClkout |= (1 << EEPROMClkout_PORIE);
 	//Write EEPROM Backup Register
+	Serial.println(EEPROMClkout);
 	writeConfigEEPROM_RAMmirror(EEPROM_Clkout_Register, EEPROMClkout);
 }
 
@@ -758,6 +760,7 @@ void RV3028::disablePORIE() // Disables Power On Reset Interrupt
 	//Write EEPROM Backup Register
 	writeConfigEEPROM_RAMmirror(EEPROM_Clkout_Register, EEPROMClkout);
 }
+
 
 bool RV3028::readPORIE()
 {
@@ -782,11 +785,22 @@ void RV3028::setExternalInterruptEdge(bool edge) {
 	}
 }
 
-void RV3028::setExternalEventFiltering(byte filter = EHL_FILTER_OFF) {
+void RV3028::setExternalEventFiltering(byte filter) {
 	// needs more work
 	setBit(RV3028_EVENTCTRL, 5); // glitch filter to 15.6ms 
 
 }
+
+void RV3028::enableExernalInterrupt() // Enables External Interrupt
+{
+    setBit(RV3028_CTRL2, CTRL2_EIE);
+}
+
+void RV3028::disableExternalInterrupt() // Enables External Interrupt
+{
+    clearBit(RV3028_CTRL2, CTRL2_EIE);
+}
+
 
 bool RV3028::readExternalInterruptFlag() {
 	return readBit(RV3028_STATUS, STATUS_EVF);

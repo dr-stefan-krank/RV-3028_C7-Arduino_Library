@@ -288,6 +288,8 @@ public:
 
 	void setExternalInterruptEdge(bool edge = EHL_FALLING);
 	void setExternalEventFiltering(byte filter = EHL_FILTER_OFF);
+	void enableExternalInterrupt();
+	void disableExternalInterrupt();
 	bool readExternalInterruptFlag();
 	void clearExternalInterruptFlag();
 
